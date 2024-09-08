@@ -32,8 +32,9 @@ export const startServer = () => {
 
   // Ответ на начальный путь
   app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello world!',
+    res.status(200).json({
+      status: 200,
+      message: 'Hello! What are you looking for?',
     });
   });
 
