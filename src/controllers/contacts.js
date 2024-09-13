@@ -15,6 +15,9 @@ export const getAllContactsController = async (req, res) => {
 // контроллер для 1 контакта
 export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
+
+  console.log(`contactId:`, contactId);
+
   const contact = await getContactById(contactId);
 
   console.log(`contact:`, contact);
@@ -22,7 +25,7 @@ export const getContactByIdController = async (req, res) => {
   // Відповідь, якщо контакт не знайдено
   if (!contact) {
     // створення та налаштування помилки за допомогою http-errors
-    return createHttpError(404, 'Contact not found');
+    throw createHttpError(404, 'Contact not found');
   }
 
   // Відповідь, якщо контакт знайдено
