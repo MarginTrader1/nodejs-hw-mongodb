@@ -6,6 +6,8 @@ import { env } from './utils/env.js';
 import contactsRouter from './routers/contacts.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { timeLogging } from './middlewares/timeLogging.js';
+import { firstPage } from './middlewares/firstPage.js';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -15,7 +17,9 @@ export const startServer = () => {
   // Вбудований у express middleware для обробки (парсингу) JSON-даних у запитах
   // наприклад, у запитах POST або PATCH
   app.use(express.json());
-  app.use(cors()); // Middleware для CORS
+
+  // Middleware для CORS
+  app.use(cors()); 
 
   // Middleware для логування
   // app.use(
@@ -27,17 +31,10 @@ export const startServer = () => {
   // );
 
   // Middleware для логування часу запиту
-  app.use((req, res, next) => {
-    console.log(`Time: ${new Date().toLocaleString()}`);
-    next();
-  });
+  app.use(timeLogging);
 
   // Ответ на начальный путь
-  app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello! What are you looking for?',
-    });
-  });
+  app.get('/', firstPage);
 
   // Ответ на путь /contacts и /contacts/:contactId
   app.use(contactsRouter);
