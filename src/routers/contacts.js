@@ -5,8 +5,8 @@ import {
   getAllContactsController,
   getContactByIdController,
   createContactController,
-  deleteStudentController,
-  updateStudentController,
+  deleteContactController,
+  updateContactController,
 } from '../controllers/contacts.js';
 
 const router = Router();
@@ -17,8 +17,8 @@ router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
 
 router.post('/contacts', ctrlWrapper(createContactController));
 
-router.patch('/students/:studentId', ctrlWrapper(updateStudentController));
+router.patch('/contacts/:contactId', ctrlWrapper(updateContactController));
 
-router.delete('/students/:studentId', ctrlWrapper(deleteStudentController));
+router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 
 export default router;

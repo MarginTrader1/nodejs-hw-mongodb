@@ -20,24 +20,30 @@ export const createContact = async (payload) => {
 
 // видалення контакту
 export const deleteContact = async (contactId) => {
-  const contact = await ContactsCollection.findOneAndDelete({
+  const result = await ContactsCollection.findOneAndDelete({
     _id: contactId,
   });
-  return contact;
+
+  return result;
 };
 
 // оновлення контакту
 export const updateContact = async (contactId, payload, options = {}) => {
-  const contact = await ContactsCollection.findOneAndUpdate(
+  const { lastErrorObject, value } = await ContactsCollection.findOneAndUpdate(
     {
       _id: contactId,
     },
     payload,
     {
-      new: true,
+      new: true, // опция для возращения обновленного контакта
       includeResultMetadata: true,
       ...options,
     },
   );
-  return contact;
+
+  // если контакта по id нет - верни null
+  if (lastErrorObject.updatedExisting === false) return null;
+
+  // если есть - возращается обновленный контакт
+  return value;
 };

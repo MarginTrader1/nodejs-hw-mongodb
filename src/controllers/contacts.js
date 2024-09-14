@@ -38,6 +38,7 @@ export const getContactByIdController = async (req, res) => {
 
 // Контролер для додавання контакту
 export const createContactController = async (req, res) => {
+  // req.body - тело запиту
   const contact = await createContact(req.body);
 
   res.status(201).json({
@@ -47,34 +48,35 @@ export const createContactController = async (req, res) => {
   });
 };
 
-// Контролер для видалення контакту
-export const deleteStudentController = async (req, res, next) => {
-  const { contactId } = req.params;
-  const contact = await deleteContact(contactId);
-
-  // коли контакт вiдсутнiй 
-  if (!contact) {
-    // створення та налаштування помилки за допомогою http-errors
-    next(createHttpError(404, 'Contact not found'));
-  }
-
-  res.status(204).send();
-};
-
 // Контролер для оновлення контакту
-export const updateStudentController = async (req, res, next) => {
+export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const result = await updateContact(contactId, req.body);
 
-  // коли контакт вiдсутнiй 
+  // коли контакт вiдсутнiй
   if (!result) {
     // створення та налаштування помилки за допомогою http-errors
-    next(createHttpError(404, 'Contact not found'));
+    next(createHttpError(404, `Contact with id ${contactId} not found`));
   }
 
   res.status(200).json({
     status: 200,
     message: 'Successfully patched a contact!',
-    data: result?.contact, // дані створеного контакту
+    data: result, // дані створеного контакту
   });
 };
+
+// Контролер для видалення контакту
+export const deleteContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const contact = await deleteContact(contactId);
+
+  // коли контакт вiдсутнiй
+  if (!contact) {
+    // створення та налаштування помилки за допомогою http-errors
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  res.status(204).send();
+};
+
