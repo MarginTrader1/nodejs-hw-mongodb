@@ -1,7 +1,12 @@
-import { getAllContacts, getContactById } from '../services/contacts.js';
+import {
+  getAllContacts,
+  getContactById,
+  createContact,
+  deleteContact,
+} from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
-// контроллер для всех контактов
+// Контроллер для всех контактов
 export const getAllContactsController = async (req, res) => {
   const contacts = await getAllContacts();
 
@@ -12,7 +17,7 @@ export const getAllContactsController = async (req, res) => {
   });
 };
 
-// контроллер для 1 контакта
+// Контроллер для 1 контакта
 export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
@@ -28,4 +33,29 @@ export const getContactByIdController = async (req, res) => {
     message: `Successfully found contact with id ${contactId}!`,
     data: contact,
   });
+};
+
+// Контролер для додавання контакту
+export const createContactController = async (req, res) => {
+  const contact = await createContact(req.body);
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: contact, // дані створеного контакту
+  });
+};
+
+// Контролер для видалення контакту
+export const deleteStudentController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const contact = await deleteContact(contactId);
+
+  // коли контакт вiдсутнiй 
+  if (!contact) {
+    // створення та налаштування помилки за допомогою http-errors
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  res.status(204).send();
 };
