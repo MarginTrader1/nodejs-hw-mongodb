@@ -3,6 +3,7 @@ import {
   getContactById,
   createContact,
   deleteContact,
+  updateContact,
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
@@ -54,8 +55,26 @@ export const deleteStudentController = async (req, res, next) => {
   // коли контакт вiдсутнiй 
   if (!contact) {
     // створення та налаштування помилки за допомогою http-errors
-    throw createHttpError(404, 'Contact not found');
+    next(createHttpError(404, 'Contact not found'));
   }
 
   res.status(204).send();
+};
+
+// Контролер для оновлення контакту
+export const updateStudentController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await updateContact(contactId, req.body);
+
+  // коли контакт вiдсутнiй 
+  if (!result) {
+    // створення та налаштування помилки за допомогою http-errors
+    next(createHttpError(404, 'Contact not found'));
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result?.contact, // дані створеного контакту
+  });
 };
