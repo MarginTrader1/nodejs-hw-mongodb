@@ -8,18 +8,38 @@ export const getAllContacts = async (
   page,
   sortBy = '_id',
   sortOrder = SORT_ORDER[0],
+  filter = {},
 ) => {
   // формула сколько пропустить вначале
   const skip = (page - 1) * perPage;
 
+  /* блок для фильтров */
+  // создание запроса contactsQuery без результат - await не ставим
+  const contactsQuery = ContactsCollection.find();
+
+  // если фильтр есть - добавляем к запросу новое условие
+  if (filter.type !== undefined) {
+    contactsQuery.where('contactType').equals(`${filter.type}`);
+  }
+
+  // если фильтр есть - добавляем к запросу новое условие
+  if (filter.isFavourite !== undefined) {
+    contactsQuery.where('isFavourite').equals(`${filter.isFavourite}`);
+  }
+
   // методы: skip - сколько пропустить, limit - сколько взять после пропуска
-  const contacts = await ContactsCollection.find()
+  const contacts = await contactsQuery
     .skip(skip)
     .limit(perPage)
     .sort({ [sortBy]: sortOrder }); // объект налаштувань для сортування {поле: порядок}
 
   // метод countDocuments() - количество объектов в базе
-  const count = await ContactsCollection.find().countDocuments();
+  // если мы сделали 1 раз запрос для contacts, то 2 раз тот же запрос для count мы сделать не сможем
+  // нужно использовать метод merge(), который в новый запрос добавляет
+  // предыдущие условия из запроса contactsQuery
+  const count = await ContactsCollection.find()
+    .merge(contactsQuery)
+    .countDocuments();
 
   const paginationData = calculatePaginationData(count, perPage, page);
 
@@ -73,3 +93,6 @@ export const updateContact = async (contactId, payload, options = {}) => {
   // если есть - возращается обновленный контакт
   return value;
 };
+
+// для фильтрации используем методы:
+// where ("поле") - поле где фильтруем та equals("value") - равно значение

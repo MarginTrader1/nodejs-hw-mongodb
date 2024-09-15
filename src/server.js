@@ -19,16 +19,16 @@ export const startServer = () => {
   app.use(express.json());
 
   // Middleware для CORS
-  app.use(cors()); 
+  app.use(cors());
 
   // Middleware для логування
-  // app.use(
-  //   pino({
-  //     transport: {
-  //       target: 'pino-pretty',
-  //     },
-  //   }),
-  // );
+  app.use(
+    pino({
+      transport: {
+        target: 'pino-pretty',
+      },
+    }),
+  );
 
   // Middleware для логування часу запиту
   app.use(timeLogging);
