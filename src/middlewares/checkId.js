@@ -4,7 +4,7 @@ import createHttpError from 'http-errors';
 // проверка валидного ID
 export const isValidId = (req, res, next) => {
   const { contactId } = req.params;
-  
+
   // если id неправильный - выбрасываем ошибку
   if (!isValidObjectId(contactId)) {
     // створення та налаштування помилки за допомогою http-errors
@@ -13,3 +13,5 @@ export const isValidId = (req, res, next) => {
   }
   next();
 };
+
+// return next(error) = throw error
