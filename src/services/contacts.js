@@ -1,8 +1,13 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 
 // отримання усих контактов
-export const getAllContacts = async () => {
-  const contacts = await ContactsCollection.find();
+export const getAllContacts = async (perPage, page) => {
+
+  // формула сколько пропустить вначале
+  const skip = (page - 1) * perPage;
+
+  // методы: skip - сколько пропустить, limit - сколько взять
+  const contacts = await ContactsCollection.find().skip(skip).limit(perPage);
   return contacts;
 };
 

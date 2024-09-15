@@ -1,3 +1,4 @@
+// функция mongoose для проверки ID на валидность 
 import { isValidObjectId } from 'mongoose';
 import createHttpError from 'http-errors';
 
@@ -5,9 +6,9 @@ import createHttpError from 'http-errors';
 export const isValidId = (req, res, next) => {
   const { contactId } = req.params;
 
-  // если id неправильный - выбрасываем ошибку
+  // если id не валидный - выбрасываем ошибку
   if (!isValidObjectId(contactId)) {
-    // створення та налаштування помилки за допомогою http-errors
+    // помилки за допомогою http-errors
     // return тому що next не перерывае виконання функции а треба переривати
     return next(createHttpError(404, `${contactId} is not valid ID`));
   }

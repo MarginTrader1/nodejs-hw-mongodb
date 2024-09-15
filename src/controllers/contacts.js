@@ -7,9 +7,13 @@ import {
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+
 // Контроллер для всех контактов
 export const getAllContactsController = async (req, res) => {
-  const contacts = await getAllContacts();
+  const { perPage, page } = parsePaginationParams(req.query);
+
+  const contacts = await getAllContacts(perPage, page);
 
   res.status(200).json({
     status: 200,
@@ -79,4 +83,3 @@ export const deleteContactController = async (req, res, next) => {
 
   res.status(204).send();
 };
-
