@@ -8,13 +8,18 @@ import {
 import createHttpError from 'http-errors';
 
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { sortFields } from '../db/models/contacts.js';
 
 // Контроллер для всех контактов
 export const getAllContactsController = async (req, res) => {
+  // пагинация
   const { perPage, page } = parsePaginationParams(req.query);
-  const contacts = await getAllContacts(perPage, page);
 
-  console.log(contacts);
+  //сортування
+  const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
+
+  const contacts = await getAllContacts(perPage, page, sortBy, sortOrder);
 
   res.status(200).json({
     status: 200,

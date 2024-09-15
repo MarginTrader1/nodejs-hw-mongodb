@@ -32,3 +32,14 @@ const contactsSchema = new Schema(
 );
 
 export const ContactsCollection = model('contacts', contactsSchema);
+
+// поля для сортування - беремо схемe
+export const sortFields = [
+  'name',
+  'phoneNumber',
+  'email',
+  'isFavourite',
+  'contactType',
+  'createdAt',
+  'updatedAt',
+];
