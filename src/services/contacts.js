@@ -1,14 +1,26 @@
 import { ContactsCollection } from '../db/models/contacts.js';
+import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
 // отримання усих контактов
 export const getAllContacts = async (perPage, page) => {
-
   // формула сколько пропустить вначале
   const skip = (page - 1) * perPage;
 
   // методы: skip - сколько пропустить, limit - сколько взять
   const contacts = await ContactsCollection.find().skip(skip).limit(perPage);
-  return contacts;
+
+  // метод countDocuments() - количество объектов в базе
+  const count = await ContactsCollection.find().countDocuments();
+
+  const paginationData = calculatePaginationData(count, perPage, page);
+
+  return {
+    contacts: contacts,
+    page,
+    perPage,
+    totalItems: count,
+    ...paginationData,
+  };
 };
 
 // отримання 1 контакту
