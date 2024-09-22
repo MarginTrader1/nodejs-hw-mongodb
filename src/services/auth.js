@@ -1,21 +1,78 @@
+// бибилотека для хеширования паролей
+import bcrypt from 'bcrypt';
+
+// пакет в node.js для создания рандомной строки
+import { randomBytes } from 'crypto';
+
 import { UserCollection } from '../db/models/User.js';
+import { SessionCollection } from '../db/models/Session.js';
+
 import createHttpError from 'http-errors';
+
+import {
+  accessTokenLifetime,
+  refreshTokenLifetime,
+} from '../constants/users.js';
 
 // монгус метод для регистрации нового юзера - возвращает данные в виде сложного объекта
 export const signup = async (payload) => {
   // проверка на наличие юзера в базе данных перед добавлением
-  const { email } = payload;
+  const { email, password } = payload;
   const checkUser = await UserCollection.findOne({ email });
   // если юзер есть - выкидуем ошибку 409
   if (checkUser) {
     throw createHttpError(409, 'Email already exist');
   }
+  // хешируем пароль = пароль + соль (10 - это уровень для соли) и передаем его в базу данных
+  const hashPassword = await bcrypt.hash(password, 10);
 
   // если нет - создаем новый документ в базе данных
-  const user = await UserCollection.create(payload);
+  const user = await UserCollection.create({
+    ...payload,
+    password: hashPassword,
+  });
 
   // удаляем пароль из ответа c помощью delete
   delete user._doc.password;
 
   return user;
+};
+
+// монгус метод для логина юзера с помощью сессий
+export const signin = async (payload) => {
+  const { email, password } = payload;
+
+  // 1) проверка на наличие юзера в базе данных
+  const checkUser = await UserCollection.findOne({ email });
+  // если юзера нет - выкидуем ошибку 401
+  if (!checkUser) {
+    throw createHttpError(401, 'Email or password invalid');
+  }
+
+  // 2) сравниваем пароль с тем что пришел из базы данных - возвращает true или false
+  const comparePassword = await bcrypt.compare(password, checkUser.password);
+  // если пароли не совпадают - выкидуем ошибку 401
+  if (!comparePassword) {
+    throw createHttpError(401, 'Email or password invalid');
+  }
+
+  // перед созданием новой сессии удаляем старую сессию если она есть (когда юзер перелогинивается)
+  await SessionCollection.deleteOne({ userId: checkUser._id });
+
+  // токены и время валидности (текущее время + час життя)
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+  const accessTokenValidUntil = new Date(Date.now() + accessTokenLifetime);
+  const refreshTokenValidUntil = new Date(Date.now() + refreshTokenLifetime);
+
+  // записываем юзер сессию в базу данных
+  const userSession = await SessionCollection.create({
+    userId: checkUser._id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil,
+    refreshTokenValidUntil,
+  });
+
+  return userSession;
 };
