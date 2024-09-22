@@ -3,7 +3,12 @@ import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
 
+// роутер для контактов
 import contactsRouter from './routers/contacts.js';
+
+// роутер для ресгитрации
+import authRouter from './routers/auth.js';
+
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { timeLogging } from './middlewares/timeLogging.js';
@@ -22,19 +27,22 @@ export const startServer = () => {
   app.use(cors());
 
   // Middleware для логування
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+  // app.use(
+  //   pino({
+  //     transport: {
+  //       target: 'pino-pretty',
+  //     },
+  //   }),
+  // );
 
   // Middleware для логування часу запиту
   app.use(timeLogging);
 
   // Ответ на начальный путь
   app.get('/', firstPage);
+
+  // Ответ на путь для регистрации
+  app.use(authRouter);
 
   // Ответ на путь /contacts и /contacts/:contactId
   app.use(contactsRouter);
