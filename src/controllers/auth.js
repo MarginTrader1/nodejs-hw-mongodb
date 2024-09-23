@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 
-import { signup, signin, refreshSession } from '../services/auth.js';
+import { signup, signin, refreshSession, signout } from '../services/auth.js';
 
 // функції передачі налаштувань сесії в кукі для фроненду
 const setupSession = (res, session) => {
@@ -68,4 +68,20 @@ export const refreshController = async (req, res) => {
       accessToken: refreshedSession.accessToken,
     },
   });
+};
+
+export const signoutController = async (req, res) => {
+  //отримуємо сесії із куків
+  const { sessionId } = req.cookies;
+
+  // якщо сесія є - видаляємо її
+  if (sessionId) {
+    await signout(sessionId);
+  }
+
+  //очищуємо кукі
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
 };

@@ -126,3 +126,8 @@ export const refreshSession = async ({ refreshToken, sessionId }) => {
 
   return userSession;
 };
+
+// метод для розлогінювання - видаляє сесію
+export const signout = async (sessionId) => {
+  await SessionCollection.deleteOne({ _id: sessionId });
+};
