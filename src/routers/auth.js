@@ -13,20 +13,24 @@ import {
 
 const authRouter = Router();
 
+// роут для реєстрації
 authRouter.post(
   '/auth/register',
   validateBody(userSignupSchema),
   ctrlWrapper(signupController),
 );
 
+// роут для логіну
 authRouter.post(
   '/auth/login',
   validateBody(userSigninSchema),
   ctrlWrapper(signinController),
 );
 
+// роут для оновлення токену
 authRouter.post('/auth/refresh', ctrlWrapper(refreshController));
 
+// роут для розлогінювання 
 authRouter.post('/auth/signout', ctrlWrapper(signoutController));
 
 export default authRouter;
