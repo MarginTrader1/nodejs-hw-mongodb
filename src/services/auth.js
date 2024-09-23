@@ -76,3 +76,10 @@ export const signin = async (payload) => {
 
   return userSession;
 };
+
+// монгус метод для пошуку сесії за accessToken - повертає сесію або null якщо такої немає
+export const findSessionByAccessToken = (accessToken) =>
+  SessionCollection.findOne({ accessToken });
+
+// монгус метод для пошуку юзера за ім'ям - повертає юзера або null якщо такого немає
+export const findUser = (filter) => UserCollection.findOne(filter);

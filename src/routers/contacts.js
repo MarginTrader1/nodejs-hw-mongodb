@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 import {
   getAllContactsController,
@@ -15,6 +16,11 @@ import { validateBody } from '../utils/validateBody.js';
 import { isValidId } from '../middlewares/checkId.js';
 
 const router = Router();
+
+// мидлвара для проверки токена - если хотим применить ее ко всем роутам contacts
+// то используем ее отдельно с помощью router.use()
+// если токен не валидный - выбросит в мидлвару обработки ошибок
+router.use(authenticate);
 
 router.get('/contacts', ctrlWrapper(getAllContactsController));
 
