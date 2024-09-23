@@ -17,9 +17,6 @@ export const getAllContactsController = async (req, res) => {
   // пагинация
   const { perPage, page } = parsePaginationParams(req.query);
 
-  console.log(`perPage`, perPage);
-  console.log(`page`, page);
-
   // сортування
   const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
 

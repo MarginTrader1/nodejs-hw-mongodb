@@ -13,10 +13,6 @@ export const getAllContacts = async ({
   // формула сколько пропустить вначале
   const skip = (page - 1) * perPage;
 
-  // console.log(`skip`, skip);
-  // console.log(`page`, page);
-  // console.log(`perPage`, perPage);
-
   /* блок для фильтров */
   // создание запроса contactsQuery без результат - await не ставим
   const contactsQuery = ContactsCollection.find();
