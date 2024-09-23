@@ -14,6 +14,22 @@ import {
   refreshTokenLifetime,
 } from '../constants/users.js';
 
+// функция создания сессии
+const createSession = () => {
+  // токены и время валидности (текущее время + час життя)
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+  const accessTokenValidUntil = new Date(Date.now() + accessTokenLifetime);
+  const refreshTokenValidUntil = new Date(Date.now() + refreshTokenLifetime);
+
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil,
+    refreshTokenValidUntil,
+  };
+};
+
 // монгус метод для регистрации нового юзера - возвращает данные в виде сложного объекта
 export const signup = async (payload) => {
   // проверка на наличие юзера в базе данных перед добавлением
@@ -59,19 +75,13 @@ export const signin = async (payload) => {
   // перед созданием новой сессии удаляем старую сессию если она есть (когда юзер перелогинивается)
   await SessionCollection.deleteOne({ userId: checkUser._id });
 
-  // токены и время валидности (текущее время + час життя)
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
-  const accessTokenValidUntil = new Date(Date.now() + accessTokenLifetime);
-  const refreshTokenValidUntil = new Date(Date.now() + refreshTokenLifetime);
+  // об'єкт при створенні нової сесії
+  const sessionData = createSession();
 
   // записываем юзер сессию в базу данных
   const userSession = await SessionCollection.create({
     userId: checkUser._id,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil,
-    refreshTokenValidUntil,
+    ...sessionData,
   });
 
   return userSession;
@@ -83,3 +93,36 @@ export const findSessionByAccessToken = (accessToken) =>
 
 // монгус метод для пошуку юзера за ім'ям - повертає юзера або null якщо такого немає
 export const findUser = (filter) => UserCollection.findOne(filter);
+
+// монгус метод для оновлення сесії
+export const refreshSession = async ({ refreshToken, sessionId }) => {
+  // знаходимо стару сесію
+  const oldSession = await SessionCollection.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+
+  // якщо сесії немає - викидуємо помилку
+  if (!oldSession) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  // якщо строк дії токену закінчився - викидуємо помилку
+  if (new Date() > oldSession.refreshTokenValidUntil) {
+    throw createHttpError(401, 'Session token expired');
+  }
+
+  // видаляємо стару сесію щоб перезаписати
+  await SessionCollection.deleteOne({ _id: sessionId });
+
+  // об'єкт при створенні нової сесії
+  const sessionData = createSession();
+
+  // записываем юзер сессію в базу данных
+  const userSession = await SessionCollection.create({
+    userId: oldSession._id,
+    ...sessionData,
+  });
+
+  return userSession;
+};

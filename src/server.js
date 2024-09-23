@@ -3,6 +3,9 @@ import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
 
+// куки парсер
+import cookieParser from "cookie-parser";
+
 // роутер для контактов
 import contactsRouter from './routers/contacts.js';
 
@@ -25,6 +28,9 @@ export const startServer = () => {
 
   // Middleware для CORS
   app.use(cors());
+
+  // Куки парсер
+  app.use(cookieParser());
 
   // Middleware для логування
   // app.use(

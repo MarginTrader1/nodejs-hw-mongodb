@@ -1,6 +1,6 @@
 import {
   getAllContacts,
-  getContactById,
+  getContact,
   createContact,
   deleteContact,
   updateContact,
@@ -44,11 +44,15 @@ export const getAllContactsController = async (req, res) => {
 // Контроллер для 1 контакта
 export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+
+  // передаємо userId щоб отримати контакт конкретного юзера
+  const { _id: userId } = req.user;
+
+  const contact = await getContact({ _id: contactId, userId });
   // Відповідь, якщо контакт не знайдено
   if (!contact) {
     // створення та налаштування помилки за допомогою http-errors
-    throw createHttpError(404, 'Contact not found');
+    throw createHttpError(404, `Contact with id ${contactId} not found`);
   }
 
   // Відповідь, якщо контакт знайдено
@@ -77,7 +81,11 @@ export const createContactController = async (req, res) => {
 // Контролер для оновлення контакту
 export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await updateContact(contactId, req.body);
+
+  // передаємо userId щоб оновлювати контакти конкретного юзера
+  const { _id: userId } = req.user;
+
+  const result = await updateContact({ _id: contactId, userId }, req.body);
 
   // коли контакт вiдсутнiй
   if (!result) {
@@ -95,7 +103,10 @@ export const updateContactController = async (req, res, next) => {
 // Контролер для видалення контакту
 export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await deleteContact(contactId);
+
+  // передаємо userId щоб видаляти контакти конкретного юзера
+  const { _id: userId } = req.user;
+  const contact = await deleteContact({ _id: contactId, userId });
 
   // коли контакт вiдсутнiй
   if (!contact) {

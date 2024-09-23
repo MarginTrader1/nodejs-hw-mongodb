@@ -58,8 +58,8 @@ export const getAllContacts = async ({
 };
 
 // отримання 1 контакту
-export const getContactById = async (contactId) => {
-  const contact = await ContactsCollection.findById(contactId);
+export const getContact = async (filter) => {
+  const contact = await ContactsCollection.findById(filter);
   return contact;
 };
 
@@ -70,20 +70,16 @@ export const createContact = async (payload) => {
 };
 
 // видалення контакту
-export const deleteContact = async (contactId) => {
-  const result = await ContactsCollection.findOneAndDelete({
-    _id: contactId,
-  });
+export const deleteContact = async (filter) => {
+  const result = await ContactsCollection.findOneAndDelete(filter);
 
   return result;
 };
 
 // оновлення контакту
-export const updateContact = async (contactId, payload, options = {}) => {
+export const updateContact = async (filter, payload, options = {}) => {
   const { lastErrorObject, value } = await ContactsCollection.findOneAndUpdate(
-    {
-      _id: contactId,
-    },
+    filter,
     payload,
     {
       new: true, // опция для возращения обновленного контакта
