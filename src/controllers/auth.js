@@ -1,5 +1,3 @@
-import createHttpError from 'http-errors';
-
 import { signup, signin, refreshSession, signout } from '../services/auth.js';
 
 // функції передачі налаштувань сесії в кукі для фроненду
