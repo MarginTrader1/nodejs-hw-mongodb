@@ -17,18 +17,25 @@ export const getAllContactsController = async (req, res) => {
   // пагинация
   const { perPage, page } = parsePaginationParams(req.query);
 
+  console.log(`perPage`, perPage);
+  console.log(`page`, page);
+
   // сортування
   const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
 
   // фильтр
   const filter = parseContactsFilterParams(req.query);
-  const contacts = await getAllContacts(
+
+  // userId для фільтрації фільмів конкретного юзера
+  const { _id: userId } = req.user;
+
+  const contacts = await getAllContacts({
     perPage,
     page,
     sortBy,
     sortOrder,
-    filter,
-  );
+    filter: { ...filter, userId },
+  });
 
   res.status(200).json({
     status: 200,
@@ -57,8 +64,11 @@ export const getContactByIdController = async (req, res) => {
 
 // Контролер для додавання контакту
 export const createContactController = async (req, res) => {
+  // отримуємо юкзер ID із запиту
+  const { _id: userId } = req.user;
+
   // req.body - тело запиту
-  const contact = await createContact(req.body);
+  const contact = await createContact({ ...req.body, userId });
 
   res.status(201).json({
     status: 201,

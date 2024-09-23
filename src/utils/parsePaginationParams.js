@@ -16,6 +16,9 @@ export const parsePaginationParams = ({ perPage, page }) => {
   const parsedperPage = parseInteger(perPage, 10);
   const parsedPage = parseInteger(page, 1);
 
+  console.log(`parsedperPage in parsePaginationParams`, parsedperPage);
+  console.log(`parsedPage in parsePaginationParams`, parsedPage);
+
   return {
     perPage: parsedperPage,
     page: parsedPage,

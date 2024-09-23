@@ -3,15 +3,19 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../constants/contact.js';
 
 // отримання усих контактов
-export const getAllContacts = async (
+export const getAllContacts = async ({
   perPage,
   page,
   sortBy = '_id',
   sortOrder = SORT_ORDER[0],
   filter = {},
-) => {
+}) => {
   // формула сколько пропустить вначале
   const skip = (page - 1) * perPage;
+
+  // console.log(`skip`, skip);
+  // console.log(`page`, page);
+  // console.log(`perPage`, perPage);
 
   /* блок для фильтров */
   // создание запроса contactsQuery без результат - await не ставим
@@ -25,6 +29,11 @@ export const getAllContacts = async (
   // если фильтр есть - добавляем к запросу новое условие
   if (filter.isFavourite !== undefined) {
     contactsQuery.where('isFavourite').equals(`${filter.isFavourite}`);
+  }
+
+  // если фильтр есть - добавляем к запросу новое условие
+  if (filter.userId) {
+    contactsQuery.where('userId').equals(`${filter.userId}`);
   }
 
   // методы: skip - сколько пропустить, limit - сколько взять после пропуска
