@@ -37,7 +37,7 @@ export const signup = async (payload) => {
   const checkUser = await UserCollection.findOne({ email });
   // если юзер есть - выкидуем ошибку 409
   if (checkUser) {
-    throw createHttpError(409, 'Email already exist');
+    throw createHttpError(409, 'Email in use');
   }
   // хешируем пароль = пароль + соль (10 - это уровень для соли) и передаем его в базу данных
   const hashPassword = await bcrypt.hash(password, 10);

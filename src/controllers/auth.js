@@ -17,7 +17,7 @@ const setupSession = (res, session) => {
   });
 };
 
-// Контролер для регистрации нового юзера
+// Контролер для реєстрації нового юзера
 export const signupController = async (req, res) => {
   const newUser = await signup(req.body);
 
@@ -38,7 +38,7 @@ export const signinController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Successfully signin',
+    message: 'Successfully logged in an user!',
     data: {
       accessToken: userSession.accessToken,
     },
@@ -61,7 +61,7 @@ export const refreshController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Successfully refresh session',
+    message: 'Successfully refreshed a session!',
     data: {
       accessToken: refreshedSession.accessToken,
     },
