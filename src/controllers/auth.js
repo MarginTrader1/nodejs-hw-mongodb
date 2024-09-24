@@ -4,7 +4,7 @@ import { signup, signin, refreshSession, signout } from '../services/auth.js';
 const setupSession = (res, session) => {
   // refreshToken передаем в куках
   res.cookie('refreshToken', session.refreshToken, {
-    // опция когда фронт енд не видит токен
+    // опция когда фронтенд не видит токен
     httpOnly: true,
     // + передаем время валидности
     expire: new Date(Date.now() + session.refreshTokenValidUntil),
