@@ -5,10 +5,10 @@ import { validateBody } from '../utils/validateBody.js';
 
 import { userSignupSchema, userSigninSchema } from '../validation/users.js';
 import {
-  signupController,
-  signinController,
+  registerController,
+  loginController,
   refreshController,
-  signoutController,
+  logoutController,
 } from '../controllers/auth.js';
 
 const authRouter = Router();
@@ -17,20 +17,20 @@ const authRouter = Router();
 authRouter.post(
   '/auth/register',
   validateBody(userSignupSchema),
-  ctrlWrapper(signupController),
+  ctrlWrapper(registerController),
 );
 
 // роут для логіну
 authRouter.post(
   '/auth/login',
   validateBody(userSigninSchema),
-  ctrlWrapper(signinController),
+  ctrlWrapper(loginController),
 );
 
 // роут для оновлення токену
 authRouter.post('/auth/refresh', ctrlWrapper(refreshController));
 
 // роут для розлогінювання 
-authRouter.post('/auth/signout', ctrlWrapper(signoutController));
+authRouter.post('/auth/logout', ctrlWrapper(logoutController));
 
 export default authRouter;

@@ -120,7 +120,7 @@ export const refreshSession = async ({ refreshToken, sessionId }) => {
 
   // записываем юзер сессію в базу данных
   const userSession = await SessionCollection.create({
-    userId: oldSession._id,
+    userId: oldSession.userId,
     ...sessionData,
   });
 

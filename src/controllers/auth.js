@@ -18,7 +18,7 @@ const setupSession = (res, session) => {
 };
 
 // Контролер для реєстрації нового юзера
-export const signupController = async (req, res) => {
+export const registerController = async (req, res) => {
   const newUser = await signup(req.body);
 
   res.status(201).json({
@@ -29,7 +29,7 @@ export const signupController = async (req, res) => {
 };
 
 // Котролер для логіна юзера
-export const signinController = async (req, res) => {
+export const loginController = async (req, res) => {
   const userSession = await signin(req.body);
 
   // при успешном логине в ответ передаем accessToken,
@@ -68,7 +68,7 @@ export const refreshController = async (req, res) => {
   });
 };
 
-export const signoutController = async (req, res) => {
+export const logoutController = async (req, res) => {
   //отримуємо сесії із куків
   const { sessionId } = req.cookies;
 

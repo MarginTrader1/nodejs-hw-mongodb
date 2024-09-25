@@ -14,7 +14,7 @@ export const getAllContacts = async ({
   const skip = (page - 1) * perPage;
 
   /* блок для фильтров */
-  // создание запроса contactsQuery без результат - await не ставим
+  // создание запроса contactsQuery без результата - await не ставим
   const contactsQuery = ContactsCollection.find();
 
   // если фильтр есть - добавляем к запросу новое условие
