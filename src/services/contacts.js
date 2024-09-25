@@ -59,7 +59,7 @@ export const getAllContacts = async ({
 
 // отримання 1 контакту
 export const getContact = async (filter) => {
-  const contact = await ContactsCollection.findById(filter);
+  const contact = await ContactsCollection.findOne(filter);
   return contact;
 };
 

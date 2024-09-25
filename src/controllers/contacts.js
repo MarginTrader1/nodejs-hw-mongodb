@@ -42,7 +42,7 @@ export const getAllContactsController = async (req, res) => {
 };
 
 // Контроллер для 1 контакта
-export const getContactByIdController = async (req, res) => {
+export const getContactController = async (req, res) => {
   const { contactId } = req.params;
 
   // передаємо userId щоб отримати контакт конкретного юзера

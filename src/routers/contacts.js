@@ -4,7 +4,7 @@ import { authenticate } from '../middlewares/authenticate.js';
 
 import {
   getAllContactsController,
-  getContactByIdController,
+  getContactController,
   createContactController,
   deleteContactController,
   updateContactController,
@@ -27,7 +27,7 @@ router.get('/contacts', ctrlWrapper(getAllContactsController));
 router.get(
   '/contacts/:contactId',
   isValidId,
-  ctrlWrapper(getContactByIdController),
+  ctrlWrapper(getContactController),
 );
 
 router.post(
