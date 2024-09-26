@@ -1,4 +1,10 @@
-import { signup, signin, refreshSession, signout } from '../services/auth.js';
+import {
+  signup,
+  signin,
+  refreshSession,
+  signout,
+  requestResetToken,
+} from '../services/auth.js';
 
 // функції передачі налаштувань сесії в кукі для фроненду
 const setupSession = (res, session) => {
@@ -68,6 +74,7 @@ export const refreshController = async (req, res) => {
   });
 };
 
+// Контролер для розлогінення юзера
 export const logoutController = async (req, res) => {
   //отримуємо сесії із куків
   const { sessionId } = req.cookies;
@@ -82,4 +89,14 @@ export const logoutController = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+// Контролер для скидання паролю юзера через email
+export const requestResetEmailController = async (req, res) => {
+  await requestResetToken(req.body.email);
+  res.json({
+    message: 'Reset password email was successfully sent!',
+    status: 200,
+    data: {},
+  });
 };

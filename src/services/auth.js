@@ -14,6 +14,12 @@ import {
   refreshTokenLifetime,
 } from '../constants/users.js';
 
+// блок импортов для надсилання повыдомлення для скидання паролю
+import jwt from 'jsonwebtoken';
+import { SMTP } from '../constants/index.js';
+import { env } from '../utils/env.js';
+import { sendEmail } from '../utils/sendMail.js';
+
 // функция создания сессии
 const createSession = () => {
   // токены и время валидности (текущее время + час життя)
@@ -130,4 +136,33 @@ export const refreshSession = async ({ refreshToken, sessionId }) => {
 // метод для розлогінювання - видаляє сесію
 export const signout = async (sessionId) => {
   await SessionCollection.deleteOne({ _id: sessionId });
+};
+
+// метод для пошуку юзера за email - для скидання паролю
+export const requestResetToken = async (email) => {
+  const user = await UserCollection.findOne({ email });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  // створення JWT токену
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '15m',
+    },
+  );
+
+  // надсилаемо сообщение с настройками 
+  await sendEmail({
+    from: env(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Reset your password',
+    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
+  });
 };
