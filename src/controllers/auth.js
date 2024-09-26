@@ -4,6 +4,7 @@ import {
   refreshSession,
   signout,
   requestResetToken,
+  resetPassword,
 } from '../services/auth.js';
 
 // функції передачі налаштувань сесії в кукі для фроненду
@@ -91,7 +92,7 @@ export const logoutController = async (req, res) => {
   res.status(204).send();
 };
 
-// Контролер для скидання паролю юзера через email
+// Контролер для надсилання email для скидання паролю юзера 
 export const requestResetEmailController = async (req, res) => {
   await requestResetToken(req.body.email);
   res.json({
@@ -100,3 +101,14 @@ export const requestResetEmailController = async (req, res) => {
     data: {},
   });
 };
+
+// Контролер для скидання паролю юзера 
+export const resetPasswordController = async (req, res) => {
+  await resetPassword(req.body);
+  res.json({
+    message: 'Password was successfully reset!',
+    status: 200,
+    data: {},
+  });
+};
+
