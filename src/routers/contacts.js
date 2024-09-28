@@ -15,6 +15,9 @@ import { validateBodySchema } from '../validation/validateBodySchema.js';
 import { validateBody } from '../utils/validateBody.js';
 import { isValidId } from '../middlewares/checkId.js';
 
+// для обработки загрузки фото
+import { upload } from '../middlewares/multer.js';
+
 const router = Router();
 
 // мидлвара для проверки токена - если хотим применить ее ко всем роутам contacts
@@ -32,6 +35,7 @@ router.get(
 
 router.post(
   '/contacts',
+  upload.single('photo'),
   validateBody(validateBodySchema),
   ctrlWrapper(createContactController),
 );
@@ -39,6 +43,7 @@ router.post(
 router.patch(
   '/contacts/:contactId',
   isValidId,
+  upload.single('photo'),
   validateBody(validateBodySchema),
   ctrlWrapper(updateContactController),
 );

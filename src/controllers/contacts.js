@@ -11,6 +11,7 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { sortFields } from '../db/models/contacts.js';
 import { parseContactsFilterParams } from '../utils/filters/parseContactsFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 // Контроллер для всех контактов
 export const getAllContactsController = async (req, res) => {
@@ -83,9 +84,19 @@ export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
   // передаємо userId щоб оновлювати контакти конкретного юзера
-  const { _id: userId } = req.user;
+  const { _id: userId } = req.user;  
+  const photo = req.file;
+  let photoUrl;
 
-  const result = await updateContact({ _id: contactId, userId }, req.body);
+  // если есть фото - перезаписываем url
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
+  const result = await updateContact(
+    { _id: contactId, userId },
+    { ...req.body, photo: photoUrl },
+  );
 
   // коли контакт вiдсутнiй
   if (!result) {

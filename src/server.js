@@ -4,7 +4,7 @@ import cors from 'cors';
 import { env } from './utils/env.js';
 
 // куки парсер
-import cookieParser from "cookie-parser";
+import cookieParser from 'cookie-parser';
 
 // роутер для контактов
 import contactsRouter from './routers/contacts.js';
@@ -16,6 +16,9 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { timeLogging } from './middlewares/timeLogging.js';
 import { firstPage } from './middlewares/firstPage.js';
+
+// ипорт для роздачі статичних файлів
+import { UPLOAD_DIR } from './constants/index.js';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -43,6 +46,9 @@ export const startServer = () => {
 
   // Middleware для логування часу запиту
   app.use(timeLogging);
+
+  // Middleware для роздачі статичних файлів
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   // Ответ на начальный путь
   app.get('/', firstPage);
