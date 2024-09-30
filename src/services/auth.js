@@ -159,7 +159,7 @@ export const requestResetToken = async (email) => {
     },
     env('JWT_SECRET'),
     {
-      expiresIn: '15m',
+      expiresIn: '5m', // час життя 
     },
   );
 
@@ -202,7 +202,8 @@ export const resetPassword = async (payload) => {
     email: entries.email,
     _id: entries.sub,
   });
-
+   
+  // якщо юзера немає
   if (!user) {
     throw createHttpError(404, 'User not found');
   }

@@ -42,14 +42,14 @@ authRouter.post('/auth/logout', ctrlWrapper(logoutController));
 
 // роут для надсилання email скидування паролю
 authRouter.post(
-  '/auth/request-reset-email',
+  '/auth/send-reset-email',
   validateBody(requestResetEmailSchema),
   ctrlWrapper(requestResetEmailController),
 );
 
 // роут для скидування паролю
 authRouter.post(
-  '/auth/reset-password',
+  '/auth/reset-pwd',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
