@@ -1,0 +1,41 @@
+# swagger/components/schemas/student.yaml
+
+type: object
+required:
+  - _id
+  - name
+  - phoneNumber
+  - email
+  - isFavourite
+  - contactType
+  - userId
+  - photo
+properties:
+  _id:
+    description: "Contact's id"
+    type: string
+    example: 65e4decdd286b30065d54af9
+  name:
+    description: "Contact's name"
+    type: string
+    example: 'John Doe'
+  phoneNumber:
+    description: "Contact's phone number"
+    type: string
+    example: "+38012345678"
+  isFavourite:
+    description: "Is the contact in favourite"
+    type: boolean
+  contactType:
+    description: "Type of contact"
+    type: string
+    enum: ['work', 'home', 'personal']
+  userId:
+    description: 'Who did created this contact'
+    type: string
+    example: 65e4decdd286b30065d54af9
+  photo:
+    description: "Link to contact's photo"
+    type: string
+    example: https://res.cloudinary.com/dwockgrff/image/upload/v1728728365/d3tyeoyorh2upqrl9jsu.jpg
+
