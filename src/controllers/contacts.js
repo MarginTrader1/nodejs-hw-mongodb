@@ -70,9 +70,23 @@ export const getContactController = async (req, res) => {
 export const createContactController = async (req, res) => {
   // отримуємо юкзер ID із запиту
   const { _id: userId } = req.user;
+  const photo = req.file;
+  let photoUrl;
+
+  // если есть фото - перезаписываем url
+  if (photo) {
+    // Якщо змінна середовища ENABLE_CLOUDINARY встановлена на true
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      //фото завантажується на Cloudinary
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      //фото завантажується у локальну директорію
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
 
   // req.body - тело запиту
-  const contact = await createContact({ ...req.body, userId });
+  const contact = await createContact({ ...req.body, userId, photo: photoUrl });
 
   res.status(201).json({
     status: 201,
