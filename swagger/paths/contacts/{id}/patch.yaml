@@ -5,6 +5,13 @@ operationId: updateContact
 description: 'Update a contact with new data'
 security:
   - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '65ca67e7ae7f10c88b598384'
 requestBody:
   content:
     multipart/form-data:
