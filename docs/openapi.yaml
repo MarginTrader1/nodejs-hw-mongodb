@@ -11,16 +11,14 @@ tags:
     description: Operations with contacts
   - name: Auth
     description: Auth operations
-
 servers:
   - url: http://localhost:3000
-  - url: #посилання на задеплоєний сайт
+  - url: https://example.com/api/v1
 paths:
   # тут будуть посилання на ендпоінти
   /contacts:
     get:
       $ref: ../swagger/paths/contacts/get.yaml
-  /contacts:
     post:
       $ref: ../swagger/paths/contacts/post.yaml
   /contacts/{id}:

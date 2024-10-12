@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 // роутер для контактов
 import contactsRouter from './routers/contacts.js';
 
-// роутер для ресгитрации
+// роутер для региcтрации
 import authRouter from './routers/auth.js';
 
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -17,8 +17,11 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { timeLogging } from './middlewares/timeLogging.js';
 import { firstPage } from './middlewares/firstPage.js';
 
-// ипорт для роздачі статичних файлів
+// импорт для роздачі статичних файлів
 import { UPLOAD_DIR } from './constants/index.js';
+
+// импорт свагера для документации
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -52,6 +55,10 @@ export const startServer = () => {
 
   // Ответ на начальный путь
   app.get('/', firstPage);
+
+  // Документация для сервера 
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   // Ответ на путь для регистрации
   app.use(authRouter);

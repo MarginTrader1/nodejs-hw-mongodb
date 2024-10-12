@@ -56,7 +56,7 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully found students!
+              example: Successfully found contacts!
             data:
               type: object
               required:
@@ -71,7 +71,7 @@ responses:
                 data:
                   type: array
                   items:
-                    $ref: '../../components/schemas/student.yaml'
+                    $ref: '../../components/schemas/contact.yaml'
                 page:
                   type: number
                   example: 2
